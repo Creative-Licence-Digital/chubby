@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>chubby.litcoffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          <h1>chubby.litcoffee</h1>
+        
+
+        
+      </div>
+
+      
+        
+        
+        
+          <div class='highlight'><pre>_ = require <span class="string">'underscore'</span>
+
+<span class="function"><span class="title">fail</span></span> = (reason) -&gt;
+  ok: <span class="literal">false</span>, reason: reason
+
+<span class="function"><span class="title">checkObject</span></span> = (pathPrefix, object, schema) -&gt;
+  <span class="keyword">for</span> key, type <span class="keyword">of</span> schema
+
+    optional = key[<span class="number">0</span>] == <span class="string">'_'</span>
+    <span class="keyword">if</span> optional
+      key = key[<span class="number">1.</span>.]
+
+    value = object[key]
+
+    path = <span class="keyword">if</span> pathPrefix <span class="keyword">then</span> <span class="string">"<span class="subst">#{pathPrefix}</span>.<span class="subst">#{key}</span>"</span> <span class="keyword">else</span> key
+
+    <span class="keyword">if</span> <span class="keyword">not</span> optional <span class="keyword">and</span> <span class="keyword">not</span> value?
+      <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> is required"</span>
+
+    <span class="keyword">if</span> <span class="keyword">not</span> value?
+      <span class="keyword">continue</span>
+
+    <span class="keyword">if</span> _.isFunction type
+      vs =
+        Number:  _.isNumber
+        String:  _.isString
+        Array:   _.isArray
+        Boolean: _.isBoolean
+        Object:  _.isObject
+
+      <span class="keyword">if</span> type.name <span class="keyword">of</span> vs
+        <span class="keyword">if</span> <span class="keyword">not</span> vs[type.name](value)
+          <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> is not a <span class="subst">#{type.name}</span>"</span>
+      <span class="keyword">else</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> type value
+          <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> is invalid"</span>
+
+    <span class="keyword">if</span> _.isRegExp type
+      <span class="keyword">if</span> <span class="keyword">not</span> type.test value
+        <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> does not match <span class="subst">#{type}</span>"</span>
+
+    <span class="keyword">if</span> _.isArray(type) <span class="keyword">and</span> type.length == <span class="number">1</span>
+      <span class="keyword">if</span> _.some(value, (v) -&gt; <span class="keyword">not</span> check v, type[<span class="number">0</span>])
+        <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> is invalid"</span> <span class="comment"># todo: better message</span>
+
+    <span class="keyword">if</span> _.isArray(type) <span class="keyword">and</span> type.length &gt; <span class="number">1</span>
+      <span class="keyword">if</span> value <span class="keyword">not</span> <span class="keyword">in</span> type
+        <span class="keyword">return</span> fail <span class="string">"<span class="subst">#{path}</span> is invalid"</span> <span class="comment"># todo: better message</span>
+
+    <span class="keyword">if</span> _.isObject type
+      c = checkObject path, value, type
+      <span class="keyword">if</span> <span class="keyword">not</span> c.ok
+        <span class="keyword">return</span> fail c.reason
+
+  <span class="keyword">return</span> ok: <span class="literal">true</span>
+
+<span class="function"><span class="title">check</span></span> = (object, schema) -&gt;
+  checkObject <span class="literal">null</span>, object, schema
+
+module.exports = check</pre></div>
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>

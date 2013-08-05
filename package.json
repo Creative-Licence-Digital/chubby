@@ -1,0 +1,21 @@
+{
+  "name": "chubby",
+  "version": "0.0.0",
+  "description": "A tiny validation library",
+  "main": "chubby.litcoffee",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Creative-Licence-Digital/chubby.git"
+  },
+  "keywords": [
+    "validation"
+  ],
+  "author": "CLD",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/Creative-Licence-Digital/chubby/issues"
+  },
+  "dependencies": {
+    "underscore": "~1.5.1"
+  }
+}
